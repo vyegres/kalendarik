@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs><linearGradient id="s" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5EC4FF"/><stop offset="1" stop-color="#D2F1FF"/></linearGradient></defs>
+  <rect width="512" height="512" fill="url(#s)"/>
+  <g fill="none" stroke-width="22">
+    <path d="M-34 420 A290 290 0 0 1 546 420" stroke="#E53935"/>
+    <path d="M-12 420 A268 268 0 0 1 524 420" stroke="#FB8C00"/>
+    <path d="M10 420 A246 246 0 0 1 502 420" stroke="#FDD835"/>
+    <path d="M32 420 A224 224 0 0 1 480 420" stroke="#43A047"/>
+    <path d="M54 420 A202 202 0 0 1 458 420" stroke="#29B6F6"/>
+    <path d="M76 420 A180 180 0 0 1 436 420" stroke="#3949AB"/>
+    <path d="M98 420 A158 158 0 0 1 414 420" stroke="#8E24AA"/>
+  </g>
+  <ellipse cx="256" cy="540" rx="380" ry="170" fill="#6FCB5E"/>
+  <rect x="0" y="420" width="512" height="92" fill="#4A5468"/>
+  <g transform="translate(70 254) scale(3.1)">
+    <rect x="3" y="21" width="18" height="5" rx="2.5" fill="#A52826"/><rect x="10" y="24" width="4" height="8" fill="#A52826"/>
+    <path d="M8 50 L8 36 Q8 30 16 30 L36 30 Q44 14 58 13 L74 13 Q84 13 90 26 L108 30 Q116 32 116 40 L116 48 Q116 52 112 52 L12 52 Q8 52 8 50 Z" fill="#E53935" stroke="#A52826" stroke-width="2" stroke-linejoin="round"/>
+    <path d="M46 28 Q52 18 60 17 L72 17 Q80 17 85 28 Z" fill="#D4F1FF" stroke="#A52826" stroke-width="1.5"/>
+    <path d="M65 17 L65 28" stroke="#A52826" stroke-width="2"/>
+    <circle cx="62" cy="40" r="9.5" fill="#fff" stroke="#A52826" stroke-width="1.5"/>
+    <text x="62" y="45" text-anchor="middle" font-size="14" font-weight="900" fill="#1F2D44" font-family="Arial Black, Arial, sans-serif">7</text>
+    <ellipse cx="112" cy="37" rx="3" ry="2.6" fill="#FFE45C"/>
+    <circle cx="30" cy="52" r="10" fill="#2B2F3A"/><circle cx="30" cy="52" r="4.5" fill="#D9DEE7"/>
+    <circle cx="94" cy="52" r="10" fill="#2B2F3A"/><circle cx="94" cy="52" r="4.5" fill="#D9DEE7"/>
+  </g>
+</svg>
