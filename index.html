@@ -158,7 +158,15 @@ button{font:inherit;color:inherit;border:0;background:none;padding:0;margin:0;cu
 .opt.off{opacity:.35;filter:grayscale(.7);pointer-events:none}
 .opt.hint{animation:hint .9s ease-in-out infinite}
 .opt.gone{visibility:hidden}
-.row7{display:grid;grid-template-columns:repeat(7,1fr);gap:1.2vw;width:100%;align-items:end;background:var(--road);padding:1.4vw 1.4vw .8vw;border-radius:20px}
+.opt:not(.gone) .lbl.on{visibility:visible}
+.lbl b,.cap b{font-weight:900;text-decoration:underline;text-decoration-color:var(--c);text-decoration-thickness:4px;text-underline-offset:4px}
+.cap{margin:.8vmin auto 0;width:max-content;max-width:100%;background:#fff;border-radius:999px;padding:.15em .55em;font-weight:900;font-size:min(1.55vw,19px);color:var(--ink);white-space:nowrap}
+.cap.hid{visibility:hidden}
+.tm .cap{font-size:clamp(18px,3vmin,28px)}
+.options.week{background:var(--road);border-radius:20px;padding:1.2vmin 1vw;gap:.8vw}
+.options.week .opt{width:calc((100vw - 160px) / 7)}
+.options.week .lbl{font-size:clamp(12px,1.7vw,20px)}
+.row7{display:grid;grid-template-columns:repeat(var(--k,7),1fr);gap:1.2vw;width:min(100%,calc(var(--k,7) * 15vw));align-items:end;background:var(--road);padding:1.4vw 1.4vw .8vw;border-radius:20px}
 .r7.filled .carsvg{animation:drivein .5s ease-out}
 .r7.gh .carsvg,.tm.ask .carsvg{animation:hint 1s ease-in-out infinite}
 .tmr{display:flex;flex-direction:column;align-items:center;gap:12px;width:min(88vw,900px)}
@@ -179,10 +187,13 @@ button{font:inherit;color:inherit;border:0;background:none;padding:0;margin:0;cu
 .slot.next{border-color:var(--gold);border-style:solid;animation:glow 1.1s ease-in-out infinite}
 .slot.full{border-color:transparent}
 .slot.full .carsvg{animation:drivein .5s ease-out}
+.slot.hint{animation:hint .9s ease-in-out infinite}
+.ordq{display:flex;justify-content:center}
 .snames{padding-left:calc(min(4.4vw,48px) + 2.4vw);margin-bottom:3vmin}
 .sname{text-align:center;font-weight:900;font-size:min(1.8vw,22px);color:#fff;text-shadow:0 2px 0 rgba(0,0,0,.25);min-height:1.4em;white-space:nowrap}
 .pool .opt{width:auto;padding:8% 6% 6%}
 .pool .opt .lbl{display:none}
+.pool .opt .lbl.on{display:block;font-size:min(1.6vw,19px)}
 
 /* ---------- today ---------- */
 .today{flex:1;display:flex;gap:3vmin;min-height:0}
@@ -202,7 +213,8 @@ button{font:inherit;color:inherit;border:0;background:none;padding:0;margin:0;cu
 @media (orientation:portrait){.today{flex-direction:column}}
 
 /* ---------- stickers ---------- */
-.stk-grid{flex:1;display:grid;grid-template-columns:repeat(8,1fr);grid-auto-rows:1fr;gap:var(--gap);min-height:0;align-content:center}
+.stk-scroll{flex:1;min-height:0;display:flex;flex-direction:column;overflow-y:auto;-webkit-overflow-scrolling:touch;touch-action:pan-y;padding:4px 8px 32px;margin:0 -8px}
+.stk-grid{display:grid;grid-template-columns:repeat(8,1fr);gap:var(--gap);margin:auto 0}
 @media (orientation:portrait){.stk-grid{grid-template-columns:repeat(5,1fr)}}
 .stk{display:grid;place-items:center;font-size:clamp(36px,7vmin,70px);aspect-ratio:1;border-radius:22px}
 .stk.locked{background:rgba(255,255,255,.4);color:rgba(255,255,255,.9);font-weight:900;border:3px dashed rgba(255,255,255,.8)}
@@ -215,6 +227,7 @@ button{font:inherit;color:inherit;border:0;background:none;padding:0;margin:0;cu
 .cel-st{font-size:clamp(90px,22vmin,220px);line-height:1;animation:spinin 1s cubic-bezier(.3,1.6,.5,1)}
 @keyframes spinin{from{transform:scale(0) rotate(-200deg)}}
 .cel-sub{font-weight:900;font-size:clamp(20px,3.4vmin,34px);color:var(--muted)}
+.cel-up{font-weight:900;font-size:clamp(18px,3vmin,30px);color:#1559B8;background:#E8F3FF;border-radius:14px;padding:.35em .9em}
 .cel-btns{display:flex;gap:4vmin;margin-top:1vmin}
 
 /* ---------- parent ---------- */
@@ -231,6 +244,8 @@ button{font:inherit;color:inherit;border:0;background:none;padding:0;margin:0;cu
 .prow.recording{background:#FFECEC;border-radius:12px}
 .prow.recording .rec{animation:pulse .8s infinite}
 .prow:not(.has) [data-act=del]{visibility:hidden}
+.hchip{width:52px;height:52px;border-radius:14px;background:#F1F5FA;font-size:24px;display:grid;place-items:center;flex:none;opacity:.45}
+.hchip.on{opacity:1;background:#FFF1C2;box-shadow:inset 0 0 0 3px var(--gold)}
 .switch{display:flex;align-items:center;gap:10px;font-size:18px;font-weight:700;margin-top:8px}
 .switch input{width:26px;height:26px}
 .pacts{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}
@@ -315,7 +330,7 @@ const praise = () => 'r_good' + (1 + rnd(4));
 const S = (() => {
   let s = {};
   try { s = JSON.parse(localStorage.getItem('kal') || '{}'); } catch (e) {}
-  return Object.assign({ stars: 0, stickers: 0, stats: {}, levels: {}, streaks: {}, tts: true }, s);
+  return Object.assign({ stars: 0, stickers: 0, stats: {}, levels: {}, streaks: {}, hints: {}, tts: true }, s);
 })();
 const save = () => { try { localStorage.setItem('kal', JSON.stringify(S)); } catch (e) {} };
 
@@ -668,6 +683,9 @@ const carSVG = (color, n) => `<svg class="carsvg" viewBox="0 -2 120 66">${carInn
 const ghostCar = () => `<svg class="carsvg" viewBox="0 -2 120 66"><path d="${CAR_BODY}" fill="rgba(255,255,255,.55)" stroke="#C3CDDC" stroke-width="2.5" stroke-dasharray="6 5"/>`
   + [30, 94].map(x => `<circle cx="${x}" cy="52" r="10" fill="rgba(255,255,255,.35)" stroke="#C3CDDC" stroke-width="2.5" stroke-dasharray="5 4"/>`).join('')
   + `<text x="62" y="38" text-anchor="middle" dominant-baseline="central" font-size="26" font-weight="900" fill="#fff" font-family="ui-rounded,Nunito,system-ui,sans-serif">?</text></svg>`;
+// hint stages: 0 colour + number, 1 colour + name caption below, 2 colour only, 3 grey (only the spoken name tells which day it is)
+const dayCar = (d, h = 0) => h > 2 ? carSVG('#B4BFCF', '?') : carSVG(d.color, h ? '' : d.n);
+const dayCap = (d, h, hid) => h === 1 ? `<div class="cap${hid ? ' hid' : ''}" style="--c:${d.color}">${rootName(d)}</div>` : '';
 function brickSVG(color) {
   const f = color || 'rgba(255,255,255,.5)', st = color ? shade(color, -.28) : 'rgba(255,255,255,.95)';
   const r = (x, y, w, h, rx) => `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${rx}" fill="${f}" stroke="${st}" stroke-width="2"/>`;
@@ -711,7 +729,7 @@ function sceneSVG(id) {
   }
 }
 const rootName = d => d.root ? `<b>${d.name.slice(0, d.root)}</b>${d.name.slice(d.root)}` : d.name;
-const carOpt = d => `<div class="carbox">${carSVG(d.color, d.n)}</div><div class="lbl">${d.name}</div>`;
+const carOpt = (d, h) => `<div class="carbox">${dayCar(d, h)}</div><div class="lbl${h === 1 ? ' on' : ''}" style="--c:${d.color}">${rootName(d)}</div>`;
 const sceneOpt = s => `<div class="scene">${sceneSVG(s.id)}</div><div class="lbl">${s.name}</div>`;
 
 /* ================= ui helpers ================= */
@@ -757,13 +775,14 @@ function holdToOpen(el, fn, ms = 1500) {
   el.addEventListener('pointerdown', e => { e.preventDefault(); el.classList.add('holding'); t = setTimeout(() => { end(); fn(); }, ms); });
   ['pointerup', 'pointerleave', 'pointercancel'].forEach(ev => el.addEventListener(ev, end));
 }
-function celebrate(onAgain) {
+function celebrate(onAgain, up) {
   const isNew = S.stickers < STICKERS.length, idx = Math.min(S.stickers, STICKERS.length - 1);
   if (isNew) S.stickers++;
   save();
   const ov = document.createElement('div');
   ov.className = 'overlay';
   ov.innerHTML = `<div class="toy cel"><div class="cel-t">Ура!</div><div class="cel-st">${STICKERS[idx]}</div><div class="cel-sub">${isNew ? 'Новая наклейка!' : 'Молодец!'}</div>
+    ${up ? `<div class="cel-up">${['', '🏷️ Теперь подписи вместо цифр!', '🎨 Теперь без подписей!', '⚪ Теперь машинки серые!'][up]}</div>` : ''}
     <div class="cel-btns"><button class="toy round xl" data-a="again">🔁</button><button class="toy round xl" data-a="home">🏠</button></div></div>`;
   app.appendChild(ov);
   sfx.fanfare();
@@ -789,12 +808,18 @@ function pick(mode, items, avoid) {
 const withDistractors = (t, items, n) => shuffle([t, ...shuffle(items.filter(i => i !== t)).slice(0, n - 1)]);
 const record = (mode, item, ok) => { const s = S.stats[mode + ':' + item.id] || (S.stats[mode + ':' + item.id] = [0, 0]); s[ok ? 0 : 1]++; };
 const bubble = word => `<button class="bubble" data-act="repeat">🔊<span>Где <b>${word.toLowerCase()}</b>?</span></button>`;
-const row7 = gi => `<div class="row7">${DAYS.map((d, i) => `<div class="r7${i === gi ? ' gh' : ''}">${i === gi ? ghostCar() : carSVG(d.color, d.n)}</div>`).join('')}</div>`;
-function tmrStage(base, dir) {
+const row7 = (days, gi, h) => `<div class="row7" style="--k:${days.length}">${days.map((d, i) => `<div class="r7${i === gi ? ' gh' : ''}" data-d="${DAYS.indexOf(d)}">${i === gi ? ghostCar() + dayCap(d, h, true) : dayCar(d, h) + dayCap(d, h)}</div>`).join('')}</div>`;
+// once the answer is found every car on the stage shows its colour and number
+const reveal = stage => $$('[data-d]', stage).forEach(c => {
+  const d = DAYS[+c.dataset.d], cap = $('.cap', c);
+  $('.carsvg', c).outerHTML = carSVG(d.color, d.n);
+  if (cap) cap.classList.remove('hid');
+});
+function tmrStage(base, dir, h) {
   const cell = k => {
-    const d = DAYS[(base + k + 7) % 7];
-    if (k === 0) return `<div class="tm"><span class="pin">📍</span>${carSVG(d.color, d.n)}</div>`;
-    return k === dir ? `<div class="tm ask">${ghostCar()}</div>` : `<div class="tm faded">${ghostCar()}</div>`;
+    const i = (base + k + 7) % 7;
+    if (k === 0) return `<div class="tm"><span class="pin">📍</span><div data-d="${i}">${dayCar(DAYS[i], h)}${dayCap(DAYS[i], h)}</div></div>`;
+    return k === dir ? `<div class="tm ask" data-d="${i}">${ghostCar()}</div>` : `<div class="tm faded">${ghostCar()}</div>`;
   };
   return `<div class="tmr"><div class="tmcells">${cell(-1)}${cell(0)}${cell(1)}</div><div class="tmlabels"><span>⬅ вчера</span><span>сегодня</span><span>завтра ➡</span></div></div>`;
 }
@@ -805,28 +830,48 @@ const QUIZ = {
     make(L, prev) { const t = pick('seasons-find', SEASONS, prev); return { answer: t, options: withDistractors(t, SEASONS, L), prompt: ['p_where', `w_${t.id}?`], stage: bubble(t.name) }; },
   },
   'days-find': {
-    max: 4, maxw: '260px', menu: () => go(DaysMenu), opt: carOpt,
-    make(L, prev) { const t = pick('days-find', DAYS, prev); return { answer: t, options: withDistractors(t, DAYS, L), prompt: ['p_where', `w_${t.id}?`], stage: bubble(t.name) }; },
+    max: 4, maxw: '260px', hints: true, menu: () => go(DaysMenu), opt: carOpt,
+    make(L, prev, h) {
+      const t = pick('days-find', DAYS, prev);
+      // grey cars: the whole week stands on the road, the day is found by its place
+      return { answer: t, options: h > 2 ? DAYS : withDistractors(t, DAYS, L), look: h, prompt: ['p_where', `w_${t.id}?`], stage: bubble(t.name) };
+    },
   },
   'days-missing': {
-    fixed: 3, maxw: '240px', menu: () => go(DaysMenu), opt: carOpt,
-    make(L, prev) { const t = pick('days-missing', DAYS, prev); return { answer: t, options: withDistractors(t, DAYS, 3), prompt: ['p_missing'], stage: row7(DAYS.indexOf(t)) }; },
-    onRight(q, stage) { const c = $('.r7.gh', stage); c.innerHTML = carSVG(q.answer.color, q.answer.n); c.className = 'r7 filled'; },
+    fixed: 3, maxw: '240px', hints: true, menu: () => go(DaysMenu), opt: carOpt,
+    make(L, prev, h) {
+      const t = pick('days-missing', DAYS, prev), q = { answer: t, options: withDistractors(t, DAYS, 3), look: Math.min(h, 2) };
+      if (h < 3) return { ...q, prompt: ['p_missing'], stage: row7(DAYS, DAYS.indexOf(t), h) };
+      // grey cars starting from any day: the gap is found only by listening to the names
+      const g = 1 + rnd(3), win = [0, 1, 2, 3, 4].map(i => DAYS[(DAYS.indexOf(t) - g + i + 7) % 7]);
+      return { ...q, stage: row7(win, g, h), speak: stage => listenWeek(win, g, stage) };
+    },
+    onRight(q, stage) { $('.r7.gh', stage).className = 'r7 filled'; reveal(stage); },
   },
   'days-tomorrow': {
-    fixed: 3, maxw: '240px', menu: () => go(DaysMenu), opt: carOpt,
-    make(L, prev) {
+    fixed: 3, maxw: '240px', hints: true, menu: () => go(DaysMenu), opt: carOpt,
+    make(L, prev, h) {
       // alternate: завтра, вчера, завтра, ...
       const dir = this.dir = this.dir === 1 ? -1 : 1;
       const t = pick('days-tomorrow', DAYS, prev), base = (DAYS.indexOf(t) - dir + 7) % 7;
       return {
-        answer: t, options: shuffle([t, DAYS[base], DAYS[(base - dir + 7) % 7]]),
-        prompt: ['p_today', 'w_' + DAYS[base].id, dir > 0 ? 'p_tomorrow' : 'p_yesterday'], stage: tmrStage(base, dir),
+        answer: t, options: shuffle([t, DAYS[base], DAYS[(base - dir + 7) % 7]]), look: Math.min(h, 2),
+        prompt: ['p_today', 'w_' + DAYS[base].id, dir > 0 ? 'p_tomorrow' : 'p_yesterday'], stage: tmrStage(base, dir, h),
       };
     },
-    onRight(q, stage) { const c = $('.tm.ask', stage); c.innerHTML = carSVG(q.answer.color, q.answer.n); c.className = 'tm filled'; },
+    onRight(q, stage) { $('.tm.ask', stage).className = 'tm filled'; reveal(stage); },
   },
 };
+// reads the cars one by one, keeps silent on the empty one, then asks who is missing
+async function listenWeek(win, g, stage) {
+  const cells = $$('.r7', stage), keys = [...win.map(d => 'w_' + d.id), 'p_missing'];
+  const read = from => say(keys.slice(from, from === 0 ? g : keys.length), { merge: false, gap: 250, onItem: i => anim(cells[from + i], 'bounce') });
+  if (!await read(0)) return;
+  const tok = sayToken;
+  anim(cells[g], 'bounce');
+  await wait(1000);
+  if (tok === sayToken) read(g + 1);
+}
 const level = mode => QUIZ[mode].fixed || S.levels[mode] || 2;
 function adjustLevel(mode, misses) {
   const M = QUIZ[mode];
@@ -835,6 +880,13 @@ function adjustLevel(mode, misses) {
   if (misses === 0 && ++st >= 3 && L < M.max) { L++; st = 0; }
   if (misses >= 2) { L = Math.max(2, L - 1); st = 0; }
   S.levels[mode] = L; S.streaks[mode] = st;
+}
+// day games: a round with at most one mistake takes the next hint away, a hard round gives one back
+const hintOf = mode => S.hints[mode] || 0;
+function adjustHints(mode, wrong) {
+  const h = hintOf(mode), nh = wrong <= 1 ? Math.min(3, h + 1) : wrong >= 5 ? Math.max(0, h - 1) : h;
+  S.hints[mode] = nh;
+  return nh > h ? nh : 0;
 }
 
 /* ================= screens ================= */
@@ -922,27 +974,30 @@ function DaysLearn() {
 }
 
 function Quiz(mode) {
-  const M = QUIZ[mode];
-  let alive = true, done = 0, q = null, misses = 0, busy = false, prev = null;
+  const M = QUIZ[mode], h = M.hints ? hintOf(mode) : 0;
+  let alive = true, done = 0, q = null, misses = 0, wrong = 0, busy = false, prev = null;
   app.innerHTML = `<div class="screen"><div class="bar">${btn('back', '⬅️')}<div class="bricks">${BRICKS.map(() => brickSVG()).join('')}</div>${btn('repeat', '🔊')}</div>
     <div class="stage"></div><div class="options"></div></div>`;
   const stage = $('.stage', app), opts = $('.options', app);
+  const ask = () => q.speak ? q.speak(stage) : say(q.prompt);
   function next() {
     misses = 0; busy = false;
-    q = M.make(level(mode), prev);
+    q = M.make(level(mode), prev, h);
     prev = q.answer;
     stage.innerHTML = q.stage;
     opts.style.setProperty('--n', q.options.length);
     opts.style.setProperty('--maxw', M.maxw);
-    opts.innerHTML = q.options.map((o, i) => `<button class="toy opt" data-act="opt" data-quiet data-i="${i}" style="animation:pop .4s ${i * .08}s both">${M.opt(o)}</button>`).join('');
+    opts.classList.toggle('week', q.options.length === 7);
+    opts.innerHTML = q.options.map((o, i) => `<button class="toy opt" data-act="opt" data-quiet data-i="${i}" style="animation:pop .4s ${i * .08}s both">${M.opt(o, q.look)}</button>`).join('');
     setTimeout(() => $$('.opt', opts).forEach(b => { b.style.animation = ''; }), 800);
-    say(q.prompt);
+    ask();
   }
   async function answer(el) {
     if (busy) return;
-    const o = q.options[+el.dataset.i];
+    const o = q.options[+el.dataset.i], box = $('.carbox', el);
+    if (q.look && box) box.innerHTML = carSVG(o.color, o.n); // a tapped car shows who it is
     if (o !== q.answer) {
-      misses++;
+      misses++; wrong++;
       sfx.bad();
       anim(el, 'wiggle');
       setTimeout(() => el.classList.add('off'), 500);
@@ -968,20 +1023,22 @@ function Quiz(mode) {
     if (!alive) return;
     await wait(300);
     if (!alive) return;
-    if (done >= BRICKS.length) celebrate(() => go(Quiz, mode)); else next();
+    if (done >= BRICKS.length) celebrate(() => go(Quiz, mode), M.hints && adjustHints(mode, wrong)); else next();
   }
-  bind({ back: () => M.menu(), repeat: () => say(q.prompt), opt: answer });
+  bind({ back: () => M.menu(), repeat: ask, opt: answer });
   next();
   return () => { alive = false; };
 }
 
 function DaysOrder() {
-  let alive = true, pos = 0, misses = 0, busy = false;
+  const h = hintOf('days-order');
+  if (h > 2) return DaysPlace();
+  let alive = true, pos = 0, misses = 0, wrong = 0, busy = false;
   app.innerHTML = `<div class="screen">${bar({ title: 'По порядку', back: 'back', right: btn('repeat', '🔊') })}
     <div class="ord">
       <div class="ord-road"><div class="fin">🏁</div><div class="slots">${DAYS.map((_, i) => `<div class="slot${i ? '' : ' next'}"></div>`).join('')}</div></div>
       <div class="snames">${DAYS.map(() => '<div class="sname"></div>').join('')}</div>
-      <div class="pool">${shuffle(DAYS).map(d => `<button class="toy opt" data-act="car" data-quiet data-id="${d.id}">${carOpt(d)}</button>`).join('')}</div>
+      <div class="pool">${shuffle(DAYS).map(d => `<button class="toy opt" data-act="car" data-quiet data-id="${d.id}">${carOpt(d, h)}</button>`).join('')}</div>
     </div></div>`;
   const slots = $$('.slot', app), names = $$('.sname', app);
   bind({
@@ -991,7 +1048,7 @@ function DaysOrder() {
       if (busy) return;
       const d = DAYS.find(x => x.id === el.dataset.id);
       if (d.n - 1 !== pos) {
-        misses++;
+        misses++; wrong++;
         sfx.bad();
         anim(el, 'wiggle');
         say(['w_' + d.id, 'r_try']);
@@ -1012,10 +1069,63 @@ function DaysOrder() {
       await say(DAYS.map(x => 'w_' + x.id), { merge: false, gap: 200, onItem: i => anim(slots[i], 'bounce') });
       if (!alive) return;
       S.stars += 3;
-      celebrate(() => go(DaysOrder));
+      celebrate(() => go(DaysOrder), adjustHints('days-order', wrong));
     },
   });
   say('p_order_days');
+  return () => { alive = false; };
+}
+
+// grey stage of «По порядку»: the days come in random order, the child finds each one's place on the road
+function DaysPlace() {
+  let alive = true, misses = 0, wrong = 0, busy = false;
+  const queue = shuffle(DAYS);
+  app.innerHTML = `<div class="screen">${bar({ title: 'По порядку', back: 'back', right: btn('repeat', '🔊') })}
+    <div class="ord">
+      <div class="ord-road"><div class="fin">🏁</div><div class="slots">${DAYS.map((_, i) => `<div class="slot" data-act="slot" data-quiet data-i="${i}">${ghostCar()}</div>`).join('')}</div></div>
+      <div class="snames">${DAYS.map(() => '<div class="sname"></div>').join('')}</div>
+      <div class="ordq"></div>
+    </div></div>`;
+  const slots = $$('.slot', app), names = $$('.sname', app), qbox = $('.ordq', app);
+  const ask = () => say(['p_where', `w_${queue[0].id}?`]);
+  function next() {
+    misses = 0; busy = false;
+    qbox.innerHTML = bubble(queue[0].name);
+    anim(qbox, 'pop');
+    ask();
+  }
+  bind({
+    back: () => go(DaysMenu),
+    repeat: () => { if (queue.length) ask(); },
+    slot: async el => {
+      if (busy || el.classList.contains('full')) return;
+      const i = +el.dataset.i, d = queue[0];
+      if (DAYS[i] !== d) {
+        misses++; wrong++;
+        sfx.bad();
+        anim(el, 'wiggle');
+        say(['w_' + DAYS[i].id, 'r_try']);
+        if (misses >= 2) slots[d.n - 1].classList.add('hint');
+        return;
+      }
+      busy = true;
+      sfx.vroom();
+      el.className = 'slot full';
+      el.innerHTML = carSVG(d.color, d.n);
+      names[i].textContent = d.name;
+      queue.shift();
+      await say('w_' + d.id);
+      if (!alive) return;
+      if (queue.length) { next(); return; }
+      qbox.innerHTML = '';
+      await wait(300);
+      await say(DAYS.map(x => 'w_' + x.id), { merge: false, gap: 200, onItem: k => anim(slots[k], 'bounce') });
+      if (!alive) return;
+      S.stars += 3;
+      celebrate(() => go(DaysOrder), adjustHints('days-order', wrong));
+    },
+  });
+  next();
   return () => { alive = false; };
 }
 
@@ -1105,11 +1215,12 @@ function Today() {
 
 function Stickers() {
   app.innerHTML = `<div class="screen">${bar({ title: 'Мои наклейки', right: `<div class="pill">⭐ ${S.stars}</div>` })}
-    <div class="stk-grid">${STICKERS.map((e, i) => i < S.stickers ? `<button class="toy stk" data-act="stk" data-quiet>${e}</button>` : '<div class="stk locked">?</div>').join('')}</div></div>`;
+    <div class="stk-scroll"><div class="stk-grid">${STICKERS.map((e, i) => i < S.stickers ? `<button class="toy stk" data-act="stk" data-quiet>${e}</button>` : '<div class="stk locked">?</div>').join('')}</div></div></div>`;
   bind({ back: () => go(Home), stk: el => { sfx.star(); anim(el, 'bounce'); } });
   say('t_stickers');
 }
 
+const HINT_GAMES = [['days-find', '🔍 Найди'], ['days-order', '🏁 По порядку'], ['days-missing', '❓ Кто пропал?'], ['days-tomorrow', '📅 Вчера и завтра']];
 function Parent() {
   let recKey = null, autoStop = null, resetArmed = false;
   const keys = Object.keys(PHRASES);
@@ -1119,6 +1230,10 @@ function Parent() {
         <p>Нажмите 🔴, скажите фразу, нажмите ⏹ — запись сразу проиграется. Ребёнок будет слышать вас вместо синтезатора. Говорите чётко и радостно.</p>
         <p><b>Записано: <span class="pcount"></span> из ${keys.length}</b></p>
         <label class="switch"><input type="checkbox" class="ptts"${S.tts ? ' checked' : ''}> Синтезатор для фраз без записи</label>
+      </section>
+      <section class="pcard"><h3>🚗 Подсказки в днях недели</h3>
+        <p>🔢 цифры → 🏷️ подписи с названием дня → 🎨 только цвета → ⚪ серые машинки: день узнаётся только по названию. Раунд почти без ошибок убирает следующую подсказку, трудный раунд возвращает её. Можно переключить и вручную.</p>
+        ${HINT_GAMES.map(([m, t]) => `<div class="prow"><div class="ptext">${t}</div>${['🔢', '🏷️', '🎨', '⚪'].map((ic, k) => `<button class="hchip${hintOf(m) === k ? ' on' : ''}" data-act="hint" data-quiet data-m="${m}" data-h="${k}">${ic}</button>`).join('')}</div>`).join('')}
       </section>
       <section class="pcard"><h3>💾 Перенос записей</h3>
         <p>Сохраните записи в файл, чтобы не потерять их или перенести на другое устройство (например, AirDrop с компьютера на iPad). На iPad: «Календарик» с экрана Домой → ⚙️ → «Загрузить из файла».</p>
@@ -1193,9 +1308,14 @@ function Parent() {
       toast(`Сохранено записей: ${n}`);
     },
     import: () => $('.pfile', app).click(),
+    hint: el => {
+      S.hints[el.dataset.m] = +el.dataset.h;
+      save();
+      $$(`.hchip[data-m="${el.dataset.m}"]`, app).forEach(b => b.classList.toggle('on', b === el));
+    },
     reset: el => {
       if (!resetArmed) { resetArmed = true; el.textContent = 'Точно? Нажмите ещё раз'; return; }
-      Object.assign(S, { stars: 0, stickers: 0, stats: {}, levels: {}, streaks: {} });
+      Object.assign(S, { stars: 0, stickers: 0, stats: {}, levels: {}, streaks: {}, hints: {} });
       save();
       el.textContent = 'Готово ✓';
     },
