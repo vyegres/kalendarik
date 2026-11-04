@@ -1,6 +1,7 @@
 // Offline cache: serve from cache instantly, refresh it in the background.
-const CACHE = 'kalendarik-v2';
-const ASSETS = ['./', './index.html', './manifest.webmanifest', './icon-180.png', './icon-192.png', './icon-512.png'];
+// The cache version and the file list are filled in by the build (vite.config.js).
+const CACHE = 'kalendarik-__VERSION__';
+const ASSETS = __ASSETS__;
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)));

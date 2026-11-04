@@ -1,2 +1,4 @@
 # parent's voice recordings stay off any public host
 kalendarik-golos.json
+node_modules/
+dist/

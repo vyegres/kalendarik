@@ -1,0 +1,13 @@
+.slearn,.sord{flex:1;display:flex;align-items:center;justify-content:center;gap:4vmin;min-height:0}
+.wheelbox{width:min(44vw,68vh);aspect-ratio:1;flex:none}
+.scard{position:relative;width:min(44vw,66vh);padding:clamp(10px,1.6vmin,18px);display:flex;flex-direction:column;align-items:center;gap:1.6vmin}
+.badge{position:absolute;z-index:2;top:22px;left:22px;background:#fff;border-radius:999px;padding:4px 14px;font-weight:900;font-size:clamp(16px,2.4vmin,24px);box-shadow:var(--shadow)}
+.spool{display:flex;flex-direction:column;gap:2.4vmin}
+.spool .opt{width:min(30vw,calc((100vh - 220px) / 3 * 1.54))}
+@media (orientation:portrait){
+  .slearn,.sord{flex-direction:column}
+  .wheelbox{width:min(70vw,40vh)}
+  .scard{width:min(84vw,46vh)}
+  .spool{flex-direction:row}
+  .spool .opt{width:min(28vw,30vh)}
+}

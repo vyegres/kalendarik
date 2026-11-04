@@ -1,0 +1,16 @@
+.ord{flex:1;display:flex;flex-direction:column;justify-content:center;gap:2vmin;min-height:0}
+.ord-road{display:flex;align-items:center;gap:1vw;background:var(--road);border-radius:22px;padding:1.4vw}
+.fin{font-size:min(4.4vw,48px)}
+.slots,.snames,.pool{display:grid;grid-template-columns:repeat(7,1fr);gap:1vw}
+.slots{flex:1}
+.slot{aspect-ratio:120/72;border:3px dashed rgba(255,255,255,.55);border-radius:14px;display:grid;place-items:center;padding:4%}
+.slot.next{border-color:var(--gold);border-style:solid;animation:glow 1.1s ease-in-out infinite}
+.slot.full{border-color:transparent}
+.slot.full .carsvg{animation:drivein .5s ease-out}
+.slot.hint{animation:hint .9s ease-in-out infinite}
+.ordq{display:flex;justify-content:center}
+.snames{padding-left:calc(min(4.4vw,48px) + 2.4vw);margin-bottom:3vmin}
+.sname{text-align:center;font-weight:900;font-size:min(1.8vw,22px);color:#fff;text-shadow:0 2px 0 rgba(0,0,0,.25);min-height:1.4em;white-space:nowrap}
+.pool .opt{width:auto;padding:8% 6% 6%}
+.pool .opt .lbl{display:none}
+.pool .opt .lbl.on{display:block;font-size:min(1.6vw,19px)}
