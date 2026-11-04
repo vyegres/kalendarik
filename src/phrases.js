@@ -1,9 +1,10 @@
 import { rnd } from './util.js';
-import { SEASONS, DAYS } from './data.js';
+import { SEASONS, DAYS, PICS } from './data.js';
 
 export const PHRASE_GROUPS = [
   ['Слова', [...SEASONS.map(s => ['w_' + s.id, s.name]), ...DAYS.map(d => ['w_' + d.id, d.name])]],
   ['Рассказы', [...SEASONS.map(s => ['d_' + s.id, s.desc]), ...DAYS.map(d => ['d_' + d.id, d.desc])]],
+  ['Картинки', SEASONS.flatMap(s => PICS[s.id].map(([id, t]) => [`i_${s.id}_${id}`, t]))],
   ['Вопросы и подсказки', [
     ['p_where', 'Где'], ['p_next', 'Что дальше?'], ['p_missing', 'Какой день потерялся?'],
     ['p_today', 'Сегодня'], ['p_now', 'Сейчас'],

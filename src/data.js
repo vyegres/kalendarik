@@ -4,6 +4,13 @@ export const SEASONS = [
   { id: 'summer', name: 'Лето',  color: '#FFB300', ink: '#1F2D44', emoji: '☀️', desc: 'Лето. Жарко! Купаемся в море и едим арбуз.' },
   { id: 'autumn', name: 'Осень', color: '#EE6A24', ink: '#fff',    emoji: '🍂', desc: 'Осень. Падают листья, идут первые дожди. Созрел виноград.' },
 ];
+// photos per season: [file id, what the voice says]; files are src/assets/seasons/<season>-<id>.webp (credits next to them)
+export const PICS = {
+  winter: [['snowman', 'Снеговик'], ['forest', 'Снежный лес'], ['sled', 'Санки'], ['skating', 'Коньки'], ['mountains', 'Снег в горах'], ['tree', 'Ёлка'], ['mandarins', 'Мандарины'], ['bullfinch', 'Снегирь']],
+  spring: [['snowdrops', 'Подснежники'], ['willow', 'Верба'], ['almond', 'Цветёт миндаль'], ['tulips', 'Тюльпаны'], ['butterfly', 'Бабочка'], ['nest', 'Гнездо'], ['easter', 'Пасха']],
+  summer: [['sea', 'Море'], ['watermelon', 'Арбуз'], ['icecream', 'Мороженое'], ['sandcastle', 'Замок из песка'], ['pool', 'Бассейн'], ['sunflowers', 'Подсолнухи'], ['daisies', 'Ромашки'], ['strawberries', 'Клубника']],
+  autumn: [['leaf', 'Кленовый лист'], ['forest', 'Золотой лес'], ['puddles', 'Лужи'], ['apples', 'Яблоки'], ['pomegranates', 'Гранаты'], ['pumpkins', 'Тыквы'], ['mushrooms', 'Грибы'], ['squirrel', 'Белка'], ['birds', 'Птицы улетают на юг']],
+};
 // 7 days = 7 rainbow colours; root = letters to underline (вТОРник = второй, ЧЕТВЕРг = четвёртый, ПЯТница = пятый, СРЕДа = середина)
 export const DAYS = [
   { id: 'mon', name: 'Понедельник', root: 0, color: '#E53935', ink: '#fff', desc: 'Понедельник — первый день недели. Идём в садик.' },

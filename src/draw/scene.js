@@ -1,3 +1,6 @@
+import { rnd } from '../util.js';
+import { PICS } from '../data.js';
+
 export function sceneSVG(id) {
   const sky = (a, b) => `<defs><linearGradient id="sky-${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${a}"/><stop offset="1" stop-color="${b}"/></linearGradient></defs><rect width="200" height="130" fill="url(#sky-${id})"/>`;
   const em = (e, x, y, sz) => `<text x="${x}" y="${y}" font-size="${sz}" text-anchor="middle" dominant-baseline="central">${e}</text>`;
@@ -19,4 +22,10 @@ export function sceneSVG(id) {
   }
 }
 
-export const sceneOpt = s => `<div class="scene">${sceneSVG(s.id)}</div><div class="lbl">${s.name}</div>`;
+// Season pictures: k = 0 is the drawn scene above, 1.. are the photos from PICS.
+const PHOTOS = import.meta.glob('../assets/seasons/*.webp', { eager: true, query: '?url', import: 'default' });
+export const picCount = id => PICS[id].length + 1;
+export const randomPic = id => rnd(picCount(id));
+export const picHTML = (id, k) => k ? `<img src="${PHOTOS[`../assets/seasons/${id}-${PICS[id][k - 1][0]}.webp`]}" alt="" draggable="false">` : sceneSVG(id);
+export const picSay = (id, k) => k ? ['w_' + id, `i_${id}_${PICS[id][k - 1][0]}`] : 'd_' + id;
+export const sceneOpt = s => `<div class="scene">${picHTML(s.id, randomPic(s.id))}</div><div class="lbl">${s.name}</div>`;

@@ -4,7 +4,7 @@ import { S } from '../state.js';
 import { sfx } from '../audio/sfx.js';
 import { say } from '../audio/speech.js';
 import { wheelSVG } from '../draw/wheel.js';
-import { sceneSVG } from '../draw/scene.js';
+import { picHTML, randomPic } from '../draw/scene.js';
 import { app, go, bind, bar, btn, anim } from '../ui/core.js';
 import { celebrate } from '../ui/celebrate.js';
 import { SeasonsMenu } from './menus.js';
@@ -15,7 +15,7 @@ export function SeasonsOrder() {
   const start = rnd(4), filled = [start];
   let pos = (start + 1) % 4, deg = start * 90;
   app.innerHTML = `<div class="screen">${bar({ title: 'Собери круг', back: 'back', right: btn('repeat', '🔊') })}
-    <div class="sord"><div class="wheelbox"></div><div class="spool">${shuffle(SEASONS.filter((_, i) => i !== start)).map(s => `<button class="toy opt" data-act="pick" data-quiet data-i="${SEASONS.indexOf(s)}"><div class="scene">${sceneSVG(s.id)}</div></button>`).join('')}</div></div></div>`;
+    <div class="sord"><div class="wheelbox"></div><div class="spool">${shuffle(SEASONS.filter((_, i) => i !== start)).map(s => `<button class="toy opt" data-act="pick" data-quiet data-i="${SEASONS.indexOf(s)}"><div class="scene">${picHTML(s.id, randomPic(s.id))}</div></button>`).join('')}</div></div></div>`;
   const box = $('.wheelbox', app);
   function draw(to, sel = -1) {
     const from = deg;

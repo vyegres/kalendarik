@@ -11,3 +11,6 @@
   .spool{flex-direction:row}
   .spool .opt{width:min(28vw,30vh)}
 }
+.dots{display:flex;gap:clamp(5px,.8vmin,8px)}
+.dots i{width:clamp(8px,1.2vmin,12px);aspect-ratio:1;border-radius:50%;background:#1F2D4422}
+.dots i.on{background:var(--c)}

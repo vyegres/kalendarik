@@ -3,13 +3,13 @@ import { SEASONS, DAYS, todayIdx, seasonIdx } from '../data.js';
 import { sfx } from '../audio/sfx.js';
 import { say } from '../audio/speech.js';
 import { carSVG } from '../draw/car.js';
-import { sceneSVG } from '../draw/scene.js';
+import { picHTML, picSay, randomPic } from '../draw/scene.js';
 import { app, go, bind, bar, btn, anim } from '../ui/core.js';
 import { Home } from './home.js';
 import './today.css';
 
 export function Today() {
-  const di = todayIdx(), d = DAYS[di], se = SEASONS[seasonIdx()];
+  const di = todayIdx(), d = DAYS[di], se = SEASONS[seasonIdx()], pic = randomPic(se.id);
   const date = new Date().toLocaleDateString('ru-RU', { day: 'numeric', month: 'long' });
   const tag = i => i === di ? 'сегодня' : i === (di + 6) % 7 ? 'вчера' : i === (di + 1) % 7 ? 'завтра' : '';
   app.innerHTML = `<div class="screen">${bar({ title: 'Сегодня', right: btn('repeat', '🔊') })}
@@ -20,7 +20,7 @@ export function Today() {
         <div class="tacts">${d.home ? '🏠 выходной' : '🎒 садик'}${d.ball ? ' · ⚽ футбол' : ''}</div>
       </button>
       <div class="tside">
-        <button class="toy tseason" data-act="season" data-quiet><div class="scene">${sceneSVG(se.id)}</div>
+        <button class="toy tseason" data-act="season" data-quiet><div class="scene">${picHTML(se.id, pic)}</div>
           <div class="tsname">Сейчас <span class="dpill" style="--c:${se.color};--t:${se.ink}">${se.name.toLowerCase()}</span></div></button>
         <div class="tdate">📅 ${date}</div>
       </div>
@@ -32,7 +32,7 @@ export function Today() {
     back: () => go(Home),
     repeat: intro,
     day: el => { anim($('.tcarbig', el), 'bounce'); sfx.vroom(); intro(); },
-    season: el => { anim(el, 'bump'); say('d_' + se.id); },
+    season: el => { anim(el, 'bump'); say(picSay(se.id, pic)); },
     sd: el => { anim(el, 'bounce'); say('w_' + DAYS[+el.dataset.i].id); },
   });
   intro();
