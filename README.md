@@ -6,6 +6,25 @@
 
 **Открыть:** https://vyegres.github.io/kalendarik/
 
+<table>
+  <tr>
+    <td width="50%"><img src="docs/screenshots/home.webp" alt="Главный экран"><br>Главный экран</td>
+    <td width="50%"><img src="docs/screenshots/today.webp" alt="Экран «Сегодня»"><br>«Сегодня» — утренний ритуал</td>
+  </tr>
+  <tr>
+    <td><img src="docs/screenshots/days-learn.webp" alt="Дни недели — смотреть"><br>Дни недели: машинки 1–7, садик и выходные</td>
+    <td><img src="docs/screenshots/days-order.webp" alt="Дни недели — по порядку"><br>Поставь машинки по порядку</td>
+  </tr>
+  <tr>
+    <td><img src="docs/screenshots/seasons-learn.webp" alt="Времена года — смотреть"><br>Круг года</td>
+    <td><img src="docs/screenshots/seasons-odd.webp" alt="Что лишнее?"><br>«Что лишнее?»</td>
+  </tr>
+  <tr>
+    <td><img src="docs/screenshots/celebrate.webp" alt="Конец раунда"><br>Конец раунда: наклейка и достроенная модель Лего</td>
+    <td><img src="docs/screenshots/garage.webp" alt="Мой гараж"><br>«Мой гараж»: модели и наклейки</td>
+  </tr>
+</table>
+
 ## Как учит
 
 - **Дни недели — гоночные машинки цветов радуги** с номером на двери: понедельник — красная №1, воскресенье — фиолетовая №7. Цвет и номер помогают запомнить порядок.
