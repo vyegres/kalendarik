@@ -11,8 +11,8 @@ import './menus.css';
 const modeTile = (act, ic, t, bg) => `<button class="toy mode" data-act="${act}" style="--bg:${bg}"><div class="ic">${ic}</div><div class="t">${t}</div></button>`;
 export function SeasonsMenu() {
   app.innerHTML = `<div class="screen">${bar({ title: 'Времена года' })}<div class="modes">
-    ${modeTile('learn', '👀', 'Смотреть', '#E6F6FF')}${modeTile('find', '🔍', 'Найди', '#FFF4D6')}${modeTile('order', '🔄', 'Собери круг', '#E5F8E1')}</div></div>`;
-  bind({ back: () => go(Home), learn: () => go(SeasonsLearn), find: () => go(Quiz, 'seasons-find'), order: () => go(SeasonsOrder) });
+    ${modeTile('learn', '👀', 'Смотреть', '#E6F6FF')}${modeTile('find', '🔍', 'Найди', '#FFF4D6')}${modeTile('order', '🔄', 'Собери круг', '#E5F8E1')}${modeTile('odd', '🧐', 'Что лишнее?', '#F6E8FF')}</div></div>`;
+  bind({ back: () => go(Home), learn: () => go(SeasonsLearn), find: () => go(Quiz, 'seasons-find'), order: () => go(SeasonsOrder), odd: () => go(Quiz, 'seasons-odd') });
   say('t_seasons');
 }
 export function DaysMenu() {

@@ -5,6 +5,12 @@
 .bubble{background:#fff;border-radius:44px;padding:2.5vmin 5vmin;font-size:clamp(34px,7vmin,76px);font-weight:900;box-shadow:var(--shadow);display:flex;align-items:center;gap:2vmin}
 .options{display:flex;justify-content:center;align-items:flex-end;gap:clamp(10px,2.4vmin,26px);flex:none;padding-bottom:1vmin}
 .tm .cap{font-size:clamp(18px,3vmin,28px)}
+/* odd one out: four pictures in a row, 2×2 when the iPad stands upright */
+.options.grid4 .opt.rest{opacity:1;filter:none}
+@media (orientation:portrait){
+  .options.grid4{display:grid;grid-template-columns:repeat(2,auto);align-items:start}
+  .options.grid4 .opt{width:min(43vw,var(--maxw))}
+}
 .options.week{background:var(--road);border-radius:20px;padding:1.2vmin 1vw;gap:.8vw}
 .options.week .opt{width:calc((100vw - 160px) / 7)}
 .options.week .lbl{font-size:clamp(12px,1.7vw,20px)}

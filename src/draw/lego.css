@@ -1,0 +1,4 @@
+.lego{display:block;width:100%;height:auto;overflow:visible}
+.lego .gh{fill:rgba(31,45,68,.05);stroke:rgba(31,45,68,.28);stroke-width:.8;stroke-dasharray:2 1.6}
+.lego .fresh{animation:drop .45s cubic-bezier(.3,1.5,.5,1) both}
+@keyframes drop{from{transform:translateY(-28px);opacity:0}}

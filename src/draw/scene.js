@@ -1,5 +1,5 @@
 import { rnd } from '../util.js';
-import { PICS } from '../data.js';
+import { PICS, MIXED } from '../data.js';
 
 export function sceneSVG(id) {
   const sky = (a, b) => `<defs><linearGradient id="sky-${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${a}"/><stop offset="1" stop-color="${b}"/></linearGradient></defs><rect width="200" height="130" fill="url(#sky-${id})"/>`;
@@ -28,4 +28,7 @@ export const picCount = id => PICS[id].length + 1;
 export const randomPic = id => rnd(picCount(id));
 export const picHTML = (id, k) => k ? `<img src="${PHOTOS[`../assets/seasons/${id}-${PICS[id][k - 1][0]}.webp`]}" alt="" draggable="false">` : sceneSVG(id);
 export const picSay = (id, k) => k ? ['w_' + id, `i_${id}_${PICS[id][k - 1][0]}`] : 'd_' + id;
+// pictures that clearly belong to the season: the drawn scene and every photo not in MIXED
+export const clearPics = id => [0, ...PICS[id].flatMap(([p], i) => MIXED.has(`${id}-${p}`) ? [] : [i + 1])];
+export const picOpt = o => `<div class="scene">${picHTML(o.id, o.k)}</div><div class="lbl">${o.name}</div>`;
 export const sceneOpt = s => `<div class="scene">${picHTML(s.id, randomPic(s.id))}</div><div class="lbl">${s.name}</div>`;

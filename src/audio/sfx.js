@@ -16,6 +16,8 @@ export const sfx = {
   good() { const t = audioCtx().currentTime; [523, 659, 784, 1047].forEach((f, i) => tone(f, t + i * .08, .18, 'triangle', .16)); },
   bad() { const t = audioCtx().currentTime; tone(330, t, .16, 'sine', .14, 260); tone(260, t + .15, .22, 'sine', .14, 200); },
   star() { const t = audioCtx().currentTime; [1319, 1568, 2093].forEach((f, i) => tone(f, t + i * .06, .25, 'sine', .08)); },
+  // a brick clicking onto the Lego model
+  snap() { const t = audioCtx().currentTime; tone(1400, t, .04, 'square', .05, 700); tone(520, t + .025, .07, 'triangle', .1, 380); },
   fanfare() { const t = audioCtx().currentTime; [[523, 0], [659, .12], [784, .24], [1047, .36], [784, .52], [1047, .64]].forEach(([f, d]) => tone(f, t + d, .28, 'square', .06)); },
   vroom() {
     const c = audioCtx(), t = c.currentTime, o = c.createOscillator(), fl = c.createBiquadFilter(), g = c.createGain();

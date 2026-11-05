@@ -19,6 +19,7 @@ export function Quiz(mode) {
   app.innerHTML = `<div class="screen"><div class="bar">${btn('back', '⬅️')}<div class="bricks">${BRICKS.map(() => brickSVG()).join('')}</div>${btn('repeat', '🔊')}</div>
     <div class="stage"></div><div class="options"></div></div>`;
   const stage = $('.stage', app), opts = $('.options', app);
+  if (M.cls) opts.classList.add(M.cls);
   const ask = () => q.speak ? q.speak(stage) : say(q.prompt);
   function next() {
     misses = 0; busy = false;
@@ -58,8 +59,8 @@ export function Quiz(mode) {
     save();
     $$('.brick', app)[done].outerHTML = brickSVG(BRICKS[done]);
     done++;
-    if (M.onRight) M.onRight(q, stage);
-    await say([praise(), 'w_' + o.id]);
+    if (M.onRight) M.onRight(q, stage, opts);
+    await say([praise(), 'w_' + o.id, ...(q.after || [])]);
     if (!alive) return;
     await wait(300);
     if (!alive) return;

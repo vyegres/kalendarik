@@ -30,3 +30,49 @@ export const STICKERS = ['🚗','🏎️','⚽','🚓','🚒','🥅','🚑','�
 export const BRICKS = ['#E53935', '#FB8C00', '#FDD835', '#43A047', '#29B6F6'];
 export const todayIdx = () => (new Date().getDay() + 6) % 7;
 export const seasonIdx = () => Math.floor(((new Date().getMonth() + 1) % 12) / 3);
+// pictures that could pass for another season (fruit, animals, flowers); "Что лишнее?" leaves them out so the odd one is always clear
+export const MIXED = new Set(['winter-mandarins', 'winter-presents', 'spring-butterfly', 'spring-ladybird', 'spring-dandelions', 'spring-snowdrops',
+  'summer-kite', 'summer-daisies', 'autumn-apples', 'autumn-birds', 'autumn-hedgehog', 'autumn-squirrel', 'autumn-rowan', 'autumn-persimmon', 'autumn-pomegranates']);
+// Lego models built from the bricks the child earns, one brick per right answer, in this order, then round again.
+// One letter = one stud of that colour (see draw/lego.js), "oo" = a wheel, "oooo" = a big wheel; built from the bottom row up.
+export const MODELS = [
+  { id: 'race', name: 'Гоночная машина', art: [
+    'KKKK           ',
+    ' KK    WT      ',
+    ' RRRRRRRRRRR   ',
+    'RRRRRRRRRRRRRRR',
+    ' oo        oo  '] },
+  { id: 'police', name: 'Полицейская машина', art: [
+    '      RB      ',
+    '    WTTWTTW   ',
+    ' WWWWWWWWWWWWW',
+    'DDDDDDDDDDDDDD',
+    '  oo      oo  '] },
+  { id: 'tractor', name: 'Трактор', art: [
+    ' GGGGGG        ',
+    ' GTTTTG    K   ',
+    ' GGGGGGGGGGGGGG',
+    '     GGGGGGGGGG',
+    '     YYYYYYYY  ',
+    'oooo      oo   '] },
+  { id: 'dump', name: 'Самосвал', art: [
+    'SSSSSSSS        ',
+    ' SSSSSSS  OOOO  ',
+    '  SSSSSS  OTTO  ',
+    '  SSSSSS  OOOOO ',
+    'KKKKKKKKKKKKKKK ',
+    ' oo   oo    oo  '] },
+  { id: 'bus', name: 'Автобус', art: [
+    'YYYYYYYYYYYYYYYY',
+    'YTTTYTTTYTTTYTTY',
+    'YYYYYYYYYYYYYYYY',
+    'KKKKKKKKKKKKKKKK',
+    '  oo        oo  '] },
+  { id: 'fire', name: 'Пожарная машина', art: [
+    '  SSSSSSSS      ',
+    ' RRRRRRRRR   B  ',
+    ' RRRRRRRRR RTTR ',
+    ' RYYRRRYYR RRRRR',
+    'KKKKKKKKKKKKKKKK',
+    '  oo       oo   '] },
+];

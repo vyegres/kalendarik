@@ -9,6 +9,7 @@ import { hush, say } from '../audio/speech.js';
 import { Rec } from '../audio/recorder.js';
 import { VOICE_FILE, voiceFile, readVoiceFile } from '../audio/voice-file.js';
 import { hintOf } from '../learning.js';
+import { legoAt } from '../draw/lego.js';
 import { app, go, bind, bar, toast } from '../ui/core.js';
 import { Home } from './home.js';
 import './parent.css';
@@ -39,8 +40,8 @@ export function Parent() {
       <section class="pcard"><h3>📲 Установка на iPad</h3>
         <p>Откройте страницу в Safari → «Поделиться» → «На экран Домой». Дальше приложение работает без интернета.</p>
         <p><b>Важно:</b> записи хранятся внутри установленного приложения. Записывайте голос, открыв «Календарик» с экрана Домой, а не во вкладке Safari.</p>
-        <p>Прогресс: ⭐ ${S.stars}, наклеек ${S.stickers} из ${STICKERS.length}.</p>
-        <button class="danger" data-act="reset">Сбросить звёзды и наклейки</button>
+        <p>Прогресс: ⭐ ${S.stars} кирпичиков, собрано моделей Лего: ${legoAt(S.stars).built}, наклеек ${S.stickers} из ${STICKERS.length}.</p>
+        <button class="danger" data-act="reset">Сбросить кирпичики, Лего и наклейки</button>
       </section>
     </div></div>`;
   const count = () => { $('.pcount', app).textContent = keys.filter(k => recordedKeys.has(k)).length; };
@@ -108,7 +109,7 @@ export function Parent() {
     },
     reset: el => {
       if (!resetArmed) { resetArmed = true; el.textContent = 'Точно? Нажмите ещё раз'; return; }
-      Object.assign(S, { stars: 0, stickers: 0, stats: {}, levels: {}, streaks: {}, hints: {} });
+      Object.assign(S, { stars: 0, bricksSeen: 0, stickers: 0, stats: {}, levels: {}, streaks: {}, hints: {} });
       save();
       el.textContent = 'Готово ✓';
     },

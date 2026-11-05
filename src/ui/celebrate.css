@@ -2,7 +2,10 @@
 .cel{padding:4vmin 7vmin;display:flex;flex-direction:column;align-items:center;gap:1.5vmin;animation:pop .5s cubic-bezier(.3,1.6,.5,1)}
 .cel:active{transform:none;box-shadow:var(--shadow)}
 .cel-t{font-size:clamp(48px,10vmin,110px);font-weight:900;color:#FF6B3D}
-.cel-st{font-size:clamp(90px,22vmin,220px);line-height:1;animation:spinin 1s cubic-bezier(.3,1.6,.5,1)}
+.cel-row{display:flex;align-items:center;gap:5vmin}
+.cel-col{display:flex;flex-direction:column;align-items:center;gap:1.5vmin}
+.cel-st{font-size:clamp(80px,18vmin,180px);line-height:1;animation:spinin 1s cubic-bezier(.3,1.6,.5,1)}
+.cel-lego{width:clamp(240px,44vmin,440px);background:#FFF7DA;border-radius:20px;padding:2.4vmin 2.6vmin}
 @keyframes spinin{from{transform:scale(0) rotate(-200deg)}}
 .cel-sub{font-weight:900;font-size:clamp(20px,3.4vmin,34px);color:var(--muted)}
 .cel-up{font-weight:900;font-size:clamp(18px,3vmin,30px);color:#1559B8;background:#E8F3FF;border-radius:14px;padding:.35em .9em}

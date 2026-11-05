@@ -4,7 +4,7 @@ import { S } from '../state.js';
 import { say, sayToken } from '../audio/speech.js';
 import { pick, withDistractors } from '../learning.js';
 import { carSVG, ghostCar, dayCar, dayCap, carOpt } from '../draw/car.js';
-import { sceneOpt } from '../draw/scene.js';
+import { sceneOpt, picOpt, clearPics } from '../draw/scene.js';
 import { go, anim } from '../ui/core.js';
 import { SeasonsMenu, DaysMenu } from './menus.js';
 
@@ -29,6 +29,21 @@ export const QUIZ = {
   'seasons-find': {
     max: 4, maxw: '300px', menu: () => go(SeasonsMenu), opt: sceneOpt,
     make(L, prev) { const t = pick('seasons-find', SEASONS, prev); return { answer: t, options: withDistractors(t, SEASONS, L), prompt: ['p_where', `w_${t.id}?`], stage: bubble(t.name) }; },
+  },
+  'seasons-odd': {
+    max: 3, maxw: '340px', cls: 'grid4', menu: () => go(SeasonsMenu), opt: picOpt,
+    // three pictures of one season and one of another; at level 2 the other one is the opposite season (winter and summer)
+    make(L, prev) {
+      const t = pick('seasons-odd', SEASONS, SEASONS.find(s => s.id === (prev && prev.id))), ti = SEASONS.indexOf(t);
+      const main = SEASONS[L < 3 ? (ti + 2) % 4 : (ti + 1 + rnd(3)) % 4], tp = clearPics(t.id);
+      const odd = { ...t, k: tp[rnd(tp.length)] }, rest = shuffle(clearPics(main.id)).slice(0, 3).map(k => ({ ...main, k }));
+      return {
+        answer: odd, options: shuffle([odd, ...rest]), prompt: ['p_odd'], after: ['p_rest', 'w_' + main.id],
+        stage: '<button class="bubble" data-act="repeat">🔊<span>Что <b>лишнее</b>?</span></button>',
+      };
+    },
+    // the other three stay bright and show their season's name: "Лето! А остальные — зима."
+    onRight(q, stage, opts) { $$('.opt:not(.right)', opts).forEach(b => b.classList.add('rest')); $$('.lbl', opts).forEach(l => l.classList.add('on')); },
   },
   'days-find': {
     max: 4, maxw: '260px', hints: true, menu: () => go(DaysMenu), opt: carOpt,
