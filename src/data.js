@@ -6,10 +6,14 @@ export const SEASONS = [
 ];
 // photos per season: [file id, what the voice says]; files are src/assets/seasons/<season>-<id>.webp (credits next to them)
 export const PICS = {
-  winter: [['snowman', 'Снеговик'], ['forest', 'Снежный лес'], ['sled', 'Санки'], ['skating', 'Коньки'], ['mountains', 'Снег в горах'], ['tree', 'Ёлка'], ['mandarins', 'Мандарины'], ['bullfinch', 'Снегирь']],
-  spring: [['snowdrops', 'Подснежники'], ['willow', 'Верба'], ['almond', 'Цветёт миндаль'], ['tulips', 'Тюльпаны'], ['butterfly', 'Бабочка'], ['nest', 'Гнездо'], ['easter', 'Пасха']],
-  summer: [['sea', 'Море'], ['watermelon', 'Арбуз'], ['icecream', 'Мороженое'], ['sandcastle', 'Замок из песка'], ['pool', 'Бассейн'], ['sunflowers', 'Подсолнухи'], ['daisies', 'Ромашки'], ['strawberries', 'Клубника']],
-  autumn: [['leaf', 'Кленовый лист'], ['forest', 'Золотой лес'], ['puddles', 'Лужи'], ['apples', 'Яблоки'], ['pomegranates', 'Гранаты'], ['pumpkins', 'Тыквы'], ['mushrooms', 'Грибы'], ['squirrel', 'Белка'], ['birds', 'Птицы улетают на юг']],
+  winter: [['snowman', 'Снеговик'], ['forest', 'Снежный лес'], ['sled', 'Санки'], ['skating', 'Коньки'], ['mountains', 'Снег в горах'], ['tree', 'Ёлка'], ['mandarins', 'Мандарины'], ['bullfinch', 'Снегирь'],
+    ['snowflake', 'Снежинка'], ['snowplow', 'Снегоуборочная машина'], ['skiing', 'Лыжи'], ['presents', 'Подарки']],
+  spring: [['snowdrops', 'Подснежники'], ['willow', 'Верба'], ['almond', 'Цветёт миндаль'], ['tulips', 'Тюльпаны'], ['butterfly', 'Бабочка'], ['nest', 'Гнездо'], ['easter', 'Пасха'],
+    ['birdhouse', 'Скворечник'], ['ducklings', 'Утята'], ['dandelions', 'Одуванчики'], ['ladybird', 'Божья коровка']],
+  summer: [['sea', 'Море'], ['watermelon', 'Арбуз'], ['icecream', 'Мороженое'], ['sandcastle', 'Замок из песка'], ['pool', 'Бассейн'], ['sunflowers', 'Подсолнухи'], ['daisies', 'Ромашки'], ['strawberries', 'Клубника'],
+    ['cherries', 'Черешня'], ['icecreamvan', 'Фургон с мороженым'], ['raspberries', 'Малина'], ['kite', 'Воздушный змей'], ['shells', 'Ракушки']],
+  autumn: [['leaf', 'Кленовый лист'], ['forest', 'Золотой лес'], ['puddles', 'Лужи'], ['apples', 'Яблоки'], ['pomegranates', 'Гранаты'], ['pumpkins', 'Тыквы'], ['mushrooms', 'Грибы'], ['squirrel', 'Белка'], ['birds', 'Птицы улетают на юг'],
+    ['rowan', 'Рябина'], ['hedgehog', 'Ёжик'], ['chestnuts', 'Каштаны'], ['park', 'Осенний парк'], ['persimmon', 'Хурма']],
 };
 // 7 days = 7 rainbow colours; root = letters to underline (вТОРник = второй, ЧЕТВЕРг = четвёртый, ПЯТница = пятый, СРЕДа = середина)
 export const DAYS = [
