@@ -7,7 +7,7 @@
 .tseason{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.4vmin;padding:2vmin;min-height:0}
 .tseason .scene{width:auto;height:100%;max-width:100%;min-height:0;flex:1 1 0}
 .tsname{font-size:clamp(24px,4.4vmin,44px);font-weight:900;color:var(--muted)}
-.tdate{background:#fff;border-radius:22px;box-shadow:var(--shadow);padding:1.6vmin;text-align:center;font-weight:900;font-size:clamp(22px,4vmin,40px)}
+.tdate{background:#fff;border-radius:22px;box-shadow:var(--shadow);padding:1.4vmin;display:flex;align-items:center;justify-content:center;gap:1.6vmin;font-weight:900;font-size:clamp(22px,4vmin,40px);border-bottom:6px solid var(--c)}
 .strip{display:grid;grid-template-columns:repeat(7,1fr);gap:1vw;background:var(--road);border-radius:18px;padding:.6vw 1vw .6vw;flex:none}
 .sd{display:flex;flex-direction:column;align-items:center;gap:2px;color:#fff;font-weight:900;font-size:min(1.8vw,20px);padding:4px;border-radius:12px}
 .sd.cur{background:rgba(255,255,255,.2)}

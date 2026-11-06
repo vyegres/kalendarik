@@ -3,5 +3,5 @@
 .sector.sel{transform:scale(1.08)}
 .sector.next{animation:secglow 1s ease-in-out infinite}
 @keyframes secglow{50%{fill:#FFF0B3}}
-.wheel text{pointer-events:none}
+.wheel text,.wheel image{pointer-events:none}
 .ringcar{transition:transform 1s cubic-bezier(.45,0,.3,1);transform-origin:0 0}

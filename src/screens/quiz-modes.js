@@ -1,12 +1,17 @@
 import { $, $$, wait, rnd, shuffle } from '../util.js';
-import { SEASONS, DAYS } from '../data.js';
-import { S } from '../state.js';
+import { SEASONS, DAYS, MONTHS, FAMILY } from '../data.js';
+import { S, save } from '../state.js';
+import { sfx } from '../audio/sfx.js';
 import { say, sayToken } from '../audio/speech.js';
 import { pick, withDistractors } from '../learning.js';
+import { faceHTML, factsOf } from '../family.js';
+import { yearSVG } from '../draw/year.js';
 import { carSVG, ghostCar, dayCar, dayCap, carOpt } from '../draw/car.js';
 import { sceneOpt, picOpt, clearPics } from '../draw/scene.js';
+import { monthOpt, famOpt, monthPicHTML } from '../draw/month.js';
 import { go, anim } from '../ui/core.js';
-import { SeasonsMenu, DaysMenu } from './menus.js';
+import { SeasonsMenu, DaysMenu, MonthsMenu } from './menus.js';
+import './months.css';
 
 export const bubble = word => `<button class="bubble" data-act="repeat">🔊<span>Где <b>${word.toLowerCase()}</b>?</span></button>`;
 const row7 = (days, gi, h) => `<div class="row7" style="--k:${days.length}">${days.map((d, i) => `<div class="r7${i === gi ? ' gh' : ''}" data-d="${DAYS.indexOf(d)}">${i === gi ? ghostCar() + dayCap(d, h, true) : dayCar(d, h) + dayCap(d, h)}</div>`).join('')}</div>`;
@@ -24,6 +29,11 @@ function tmrStage(base, dir, h) {
   };
   return `<div class="tmr"><div class="tmcells">${cell(-1)}${cell(0)}${cell(1)}</div><div class="tmlabels"><span>⬅ вчера</span><span>сегодня</span><span>завтра ➡</span></div></div>`;
 }
+
+// n months, each from a different season than t and than each other, so the cards look clearly different
+const otherSeasons = (t, n) => shuffle([0, 1, 2, 3].filter(s => s !== t.s)).slice(0, n).map(s => { const ms = MONTHS.filter(m => m.s === s); return ms[rnd(ms.length)]; });
+const ask = (ic, t) => `<button class="bubble" data-act="repeat">🔊<span>${ic} <b>${t}</b></span></button>`;
+const monthBig = m => `<div class="mbig" style="--c:${m.color}"><div class="scene">${monthPicHTML(m)}</div><div class="dpill" style="--c:${m.color};--t:${m.ink}">${m.name}</div></div>`;
 
 export const QUIZ = {
   'seasons-find': {
@@ -76,6 +86,43 @@ export const QUIZ = {
       };
     },
     onRight(q, stage) { $('.tm.ask', stage).className = 'tm filled'; reveal(stage); },
+  },
+  // «Поехали по году»: the car stands on a month, the next one hides behind "?"; a right card drives it on.
+  // The car's place is kept (S.mpos), so round after round it goes all around the year.
+  'months-drive': {
+    fixed: 3, maxw: '250px', menu: () => go(MonthsMenu), opt: o => monthOpt(o),
+    make() {
+      const i = S.mpos || 0, base = MONTHS[i], t = MONTHS[(i + 1) % 12];
+      return {
+        answer: t, options: shuffle([t, ...otherSeasons(t, 2)]), prompt: ['w_' + base.id, 'p_mnext'], after: factsOf(t.n - 1),
+        stage: `<div class="mstage"><div class="mring">${yearSVG({ sel: i, ask: t.n - 1, car: true, carDeg: i * 30 })}</div>${ask('🚗', 'А потом?')}</div>`,
+      };
+    },
+    onRight(q, stage) {
+      const i = S.mpos || 0, box = $('.mring', stage);
+      S.mpos = (i + 1) % 12;
+      save();
+      sfx.vroom();
+      box.innerHTML = yearSVG({ sel: S.mpos, car: true, carDeg: i * 30 });
+      requestAnimationFrame(() => requestAnimationFrame(() => { $('.ringcar', box).style.transform = `rotate(${i * 30 + 30}deg)`; }));
+    },
+  },
+  'months-bday': {
+    fixed: 3, maxw: '250px', menu: () => go(MonthsMenu), opt: o => o.emoji ? famOpt(o) : monthOpt(o, false),
+    // alternates «Чей день рождения в январе?» (pick the person) and «Когда день рождения у мамы?» (pick the month);
+    // the four people come in shuffled turns, so every round has each of them
+    make(L, prev) {
+      if (!this.queue || !this.queue.length) {
+        this.queue = shuffle(FAMILY);
+        if (this.queue[0] === prev) this.queue.push(this.queue.shift()); // never the same person twice in a row
+      }
+      const f = this.queue.shift(), m = MONTHS[f.m];
+      if ((this.who = !this.who)) return { answer: f, options: shuffle(FAMILY), prompt: ['q_whose_' + f.id], after: ['b_' + f.id], stage: '<div class="mstage">' + monthBig(m) + ask('🎂', 'Чей?') + '</div>' };
+      return {
+        answer: m, rec: f, options: shuffle([m, ...otherSeasons(m, 2)]), prompt: ['q_when_' + f.id], after: ['b_' + f.id],
+        stage: '<div class="mstage"><div class="bigface">' + faceHTML(f, 'big') + '</div>' + ask('📅', 'Когда?') + '</div>',
+      };
+    },
   },
 };
 // reads the cars one by one, keeps silent on the empty one, then asks who is missing

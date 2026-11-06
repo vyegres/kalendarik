@@ -1,8 +1,12 @@
-import { PHRASES } from '../phrases.js';
+import { FAMILY } from '../data.js';
+import { PHRASES, refreshFamily } from '../phrases.js';
+import { S, save } from '../state.js';
+import { photos, setPhoto } from '../family.js';
 import { DB } from './db.js';
 import { clipCache, recordedKeys, decode, loadClip } from './clips.js';
 
-// voice backup file: every clip as mono 16-bit WAV (plays everywhere, unlike Chrome's webm)
+// voice backup file: every clip as mono 16-bit WAV (plays everywhere, unlike Chrome's webm),
+// plus the family names and photos from parent mode
 export const VOICE_FILE = 'kalendarik-golos.json';
 function wavBytes(buf) {
   const k = Math.max(1, Math.floor(buf.sampleRate / 22050)), src = buf.getChannelData(0);
@@ -22,16 +26,25 @@ function wavBytes(buf) {
 }
 const toB64 = bytes => { let s = ''; for (let i = 0; i < bytes.length; i += 0x8000) s += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000)); return btoa(s); };
 const fromB64 = b64 => Uint8Array.from(atob(b64), c => c.charCodeAt(0));
+// MP3 and AAC (iPad recordings) play everywhere and stay small, so they are saved as they are;
+// anything else (Chrome's webm) becomes WAV
+const KEEP = /^audio\/(mpeg|mp4|aac|x-m4a)/;
 export async function voiceFile() {
-  const clips = {}, times = {};
+  const clips = {}, times = {}, types = {};
   for (const k of Object.keys(PHRASES)) {
     if (!recordedKeys.has(k)) continue;
-    const buf = await loadClip(k);
-    if (!buf) continue;
-    clips[k] = toB64(wavBytes(buf));
-    times[k] = ((await DB.get(k)) || {}).t || Date.now();
+    const rec = (await DB.get(k)) || {};
+    if (rec.data && KEEP.test(rec.type || '')) { clips[k] = toB64(new Uint8Array(rec.data)); types[k] = rec.type; }
+    else {
+      const buf = await loadClip(k);
+      if (!buf) continue;
+      clips[k] = toB64(wavBytes(buf));
+    }
+    times[k] = rec.t || Date.now();
   }
-  return { app: 'kalendarik', v: 1, type: 'audio/wav', clips, times };
+  const pics = {};
+  for (const f of FAMILY) { const r = await DB.get(f.id, 'photos'); if (r) pics[f.id] = toB64(new Uint8Array(r.data)); }
+  return { app: 'kalendarik', v: 1, type: 'audio/wav', types, clips, times, family: S.family || {}, photos: pics };
 }
 export async function readVoiceFile(file) {
   const j = JSON.parse(await file.text());
@@ -41,9 +54,20 @@ export async function readVoiceFile(file) {
     if (!(k in PHRASES)) continue;
     const data = fromB64(b).buffer;
     await decode(data.slice(0));
-    out.push([k, { data, type: j.type || 'audio/wav', t: (j.times && j.times[k]) || Date.now(), src: 'file' }]);
+    out.push([k, { data, type: (j.types && j.types[k]) || j.type || 'audio/wav', t: (j.times && j.times[k]) || Date.now(), src: 'file' }]);
   }
-  return out;
+  const pics = Object.entries(j.photos || {}).filter(([k]) => FAMILY.some(f => f.id === k)).map(([k, b]) => [k, { data: fromB64(b).buffer, type: 'image/jpeg' }]);
+  return { clips: out, family: j.family && typeof j.family === 'object' ? j.family : null, photos: pics };
+}
+// names and photos from a file; `fill` only fills what this device doesn't have yet
+export async function applyFamily({ family, photos: pics }, fill) {
+  // a file without names (or an old voice-only one) never wipes the names typed on this device
+  if (family && Object.keys(family).length && (!fill || !S.family || !Object.keys(S.family).length)) {
+    S.family = Object.fromEntries(Object.entries(family).filter(([k]) => FAMILY.some(f => f.id === k)));
+    save();
+    refreshFamily();
+  }
+  for (const [k, rec] of pics) if (!fill || !photos.has(k)) await setPhoto(k, rec);
 }
 // voice file served next to the app (laptop on home Wi-Fi): fills phrases this device has no
 // mic recording for, and newer versions of the file replace clips taken from an older one
@@ -51,12 +75,14 @@ export async function loadBundledVoice() {
   try {
     const res = await fetch(VOICE_FILE, { cache: 'no-cache' });
     if (!res.ok) return;
-    for (const [k, v] of await readVoiceFile(await res.blob())) {
+    const file = await readVoiceFile(await res.blob());
+    for (const [k, v] of file.clips) {
       const cur = await DB.get(k);
       if (cur && (cur.src !== 'file' || cur.t >= v.t)) continue;
       await DB.put(k, v);
       recordedKeys.add(k);
       clipCache.delete(k);
     }
+    await applyFamily(file, true);
   } catch (e) {}
 }

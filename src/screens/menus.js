@@ -5,6 +5,8 @@ import { SeasonsLearn } from './seasons-learn.js';
 import { SeasonsOrder } from './seasons-order.js';
 import { DaysLearn } from './days-learn.js';
 import { DaysOrder } from './days-order.js';
+import { MonthsLearn } from './months-learn.js';
+import { MonthsSeason } from './months-season.js';
 import { Quiz } from './quiz.js';
 import './menus.css';
 
@@ -21,4 +23,14 @@ export function DaysMenu() {
     ${modeTile('missing', '❓', 'Кто пропал?', '#F6E8FF')}${modeTile('tomorrow', '📅', 'Вчера и завтра', '#FFE6DF')}</div></div>`;
   bind({ back: () => go(Home), learn: () => go(DaysLearn), find: () => go(Quiz, 'days-find'), order: () => go(DaysOrder), missing: () => go(Quiz, 'days-missing'), tomorrow: () => go(Quiz, 'days-tomorrow') });
   say('t_days');
+}
+export function MonthsMenu() {
+  app.innerHTML = `<div class="screen">${bar({ title: 'Месяцы' })}<div class="modes">
+    ${modeTile('learn', '👀', 'Смотреть', '#E6F6FF')}${modeTile('drive', '🚗', 'Поехали по году', '#E5F8E1')}
+    ${modeTile('season', '🧩', 'Собери время года', '#F6E8FF')}${modeTile('bday', '🎂', 'Чей день рождения?', '#FFE6DF')}</div></div>`;
+  bind({
+    back: () => go(Home), learn: () => go(MonthsLearn), drive: () => go(Quiz, 'months-drive'),
+    season: () => go(MonthsSeason), bday: () => go(Quiz, 'months-bday'),
+  });
+  say('t_months');
 }

@@ -1,22 +1,30 @@
 import { $, $$ } from '../util.js';
-import { STICKERS } from '../data.js';
-import { PHRASE_GROUPS, PHRASES } from '../phrases.js';
+import { STICKERS, MONTHS, FAMILY } from '../data.js';
+import { PHRASE_GROUPS, PHRASES, refreshFamily } from '../phrases.js';
 import { S, save } from '../state.js';
 import { DB } from '../audio/db.js';
 import { setAudioSession } from '../audio/context.js';
 import { clipCache, recordedKeys, decode } from '../audio/clips.js';
 import { hush, say } from '../audio/speech.js';
 import { Rec } from '../audio/recorder.js';
-import { VOICE_FILE, voiceFile, readVoiceFile } from '../audio/voice-file.js';
+import { VOICE_FILE, voiceFile, readVoiceFile, applyFamily } from '../audio/voice-file.js';
 import { hintOf } from '../learning.js';
+import { famNom, famGen, genOf, setNames, faceHTML, photos, setPhoto, squarePhoto } from '../family.js';
 import { legoAt } from '../draw/lego.js';
 import { app, go, bind, bar, toast } from '../ui/core.js';
 import { Home } from './home.js';
 import './parent.css';
 
 const HINT_GAMES = [['days-find', '🔍 Найди'], ['days-order', '🏁 По порядку'], ['days-missing', '❓ Кто пропал?'], ['days-tomorrow', '📅 Вчера и завтра']];
+const own = f => (S.family && S.family[f.id]) || {};
+const famRow = f => `<div class="pfam${photos.has(f.id) ? ' has' : ''}" data-id="${f.id}">
+  <button class="pface" data-act="photo" data-quiet>${faceHTML(f)}</button>
+  <div class="pfam-f"><div class="pfam-m">🎂 ${MONTHS[f.m].name.toLowerCase()}</div>
+    <label>Имя <input class="pin" data-f="nom" value="${own(f).nom || ''}" placeholder="${f.nom}" autocomplete="off"></label>
+    <label>У кого? <input class="pin" data-f="gen" value="${own(f).gen || ''}" placeholder="${famGen(f)}" autocomplete="off"></label></div>
+  <button class="pbtn" data-act="unphoto" data-quiet>🗑️</button></div>`;
 export function Parent() {
-  let recKey = null, autoStop = null, resetArmed = false;
+  let recKey = null, autoStop = null, resetArmed = false, photoFor = null;
   const keys = Object.keys(PHRASES);
   app.innerHTML = `<div class="screen">${bar({ title: 'Для родителей' })}
     <div class="pscroll">
@@ -25,13 +33,19 @@ export function Parent() {
         <p><b>Записано: <span class="pcount"></span> из ${keys.length}</b></p>
         <label class="switch"><input type="checkbox" class="ptts"${S.tts ? ' checked' : ''}> Синтезатор для фраз без записи</label>
       </section>
+      <section class="pcard"><h3>👪 Семья</h3>
+        <p>В «Месяцах» ребёнок запоминает месяцы по дням рождения. Нажмите на кружок, чтобы поставить фото (камера или галерея), и впишите имя так, как его называет ребёнок. «У кого?» нужно для фраз вроде «Когда день рождения у Маши?» — обычно подставляется само.</p>
+        <p>Фото и имена хранятся только на этом iPad и сохраняются в файл вместе с голосом. После смены имени перезапишите фразы из раздела «Семья и праздники».</p>
+        ${FAMILY.map(famRow).join('')}
+        <input type="file" class="pphoto" accept="image/*">
+      </section>
       <section class="pcard"><h3>🚗 Подсказки в днях недели</h3>
         <p>🔢 цифры → 🏷️ подписи с названием дня → 🎨 только цвета → ⚪ серые машинки: день узнаётся только по названию. Раунд почти без ошибок убирает следующую подсказку, трудный раунд возвращает её. Можно переключить и вручную.</p>
         ${HINT_GAMES.map(([m, t]) => `<div class="prow"><div class="ptext">${t}</div>${['🔢', '🏷️', '🎨', '⚪'].map((ic, k) => `<button class="hchip${hintOf(m) === k ? ' on' : ''}" data-act="hint" data-quiet data-m="${m}" data-h="${k}">${ic}</button>`).join('')}</div>`).join('')}
       </section>
-      <section class="pcard"><h3>💾 Перенос записей</h3>
-        <p>Сохраните записи в файл, чтобы не потерять их или перенести на другое устройство (например, AirDrop с компьютера на iPad). На iPad: «Календарик» с экрана Домой → ⚙️ → «Загрузить из файла».</p>
-        <p>Если iPad открывает приложение с ноутбука, положите файл <b>${VOICE_FILE}</b> в папку приложения — iPad подхватит голос сам.</p>
+      <section class="pcard"><h3>💾 Перенос голоса и фото</h3>
+        <p>Сохраните в файл записи голоса, фото и имена семьи, чтобы не потерять их или перенести на другое устройство (например, AirDrop с компьютера на iPad). На iPad: «Календарик» с экрана Домой → ⚙️ → «Загрузить из файла».</p>
+        <p>Если iPad открывает приложение с ноутбука, положите файл <b>${VOICE_FILE}</b> в папку приложения — iPad подхватит голос и фото сам.</p>
         <div class="pacts"><button class="pact" data-act="export" data-quiet>💾 Сохранить в файл</button><button class="pact" data-act="import" data-quiet>📂 Загрузить из файла</button></div>
         <input type="file" class="pfile" accept=".json,application/json">
       </section>
@@ -85,9 +99,10 @@ export function Parent() {
       row.classList.remove('has');
       count();
     },
+    // one file for everything made on this device: the voice clips, family photos and names
     export: async () => {
-      if (!recordedKeys.size) { toast('Пока нет записей'); return; }
-      const j = await voiceFile(), n = Object.keys(j.clips).length;
+      const j = await voiceFile(), n = Object.keys(j.clips).length, p = Object.keys(j.photos).length;
+      if (!n && !p && !Object.keys(j.family).length) { toast('Пока нечего сохранять'); return; }
       const file = new File([JSON.stringify(j)], VOICE_FILE, { type: 'application/json' });
       // iPad: share sheet (AirDrop, Files); computer: regular download
       if (matchMedia('(pointer:coarse)').matches && navigator.canShare && navigator.canShare({ files: [file] })) {
@@ -99,9 +114,11 @@ export function Parent() {
         a.click();
         setTimeout(() => URL.revokeObjectURL(a.href), 10000);
       }
-      toast(`Сохранено записей: ${n}`);
+      toast(`Сохранено: записей ${n}, фото ${p}`);
     },
     import: () => $('.pfile', app).click(),
+    photo: el => { photoFor = el.closest('.pfam').dataset.id; $('.pphoto', app).click(); },
+    unphoto: async el => { const row = el.closest('.pfam'); await setPhoto(row.dataset.id, null); famFace(row.dataset.id); },
     hint: el => {
       S.hints[el.dataset.m] = +el.dataset.h;
       save();
@@ -109,7 +126,7 @@ export function Parent() {
     },
     reset: el => {
       if (!resetArmed) { resetArmed = true; el.textContent = 'Точно? Нажмите ещё раз'; return; }
-      Object.assign(S, { stars: 0, bricksSeen: 0, stickers: 0, stats: {}, levels: {}, streaks: {}, hints: {} });
+      Object.assign(S, { stars: 0, bricksSeen: 0, stickers: 0, stats: {}, levels: {}, streaks: {}, hints: {}, mpos: 0 });
       save();
       el.textContent = 'Готово ✓';
     },
@@ -120,16 +137,49 @@ export function Parent() {
     e.target.value = '';
     if (!f) return;
     try {
-      const clips = await readVoiceFile(f);
+      const file = await readVoiceFile(f), { clips } = file;
       for (const [k, v] of clips) {
         await DB.put(k, v);
         clipCache.delete(k);
         recordedKeys.add(k);
         rowOf(k).classList.add('has');
       }
+      await applyFamily(file, false);
+      FAMILY.forEach(x => { famFace(x.id); const row = $(`.pfam[data-id="${x.id}"]`, app); $$('.pin', row).forEach(i => { i.value = own(x)[i.dataset.f] || ''; }); });
+      famTexts();
       count();
-      toast(`Загружено записей: ${clips.length}`);
-    } catch (err) { toast('Это не файл с записями «Календарика»'); }
+      toast(`Загружено: записей ${clips.length}, фото ${file.photos.length}`);
+    } catch (err) { toast('Это не файл «Календарика»'); }
+  });
+  // family: a photo for each person, and the name as the child says it
+  function famFace(id) {
+    const row = $(`.pfam[data-id="${id}"]`, app);
+    $('.pface', row).innerHTML = faceHTML(FAMILY.find(x => x.id === id));
+    row.classList.toggle('has', photos.has(id));
+  }
+  // the family phrases are built from the names: show the new texts and the "у кого?" guess
+  function famTexts() {
+    refreshFamily();
+    PHRASE_GROUPS.find(([g]) => g === 'Семья и праздники')[1].forEach(([k, t]) => { const r = rowOf(k); if (r) $('.ptext', r).textContent = t; });
+    FAMILY.forEach(x => { $(`.pfam[data-id="${x.id}"] [data-f="gen"]`, app).placeholder = famGen(x); });
+  }
+  $$('.pin', app).forEach(inp => {
+    const row = inp.closest('.pfam'), id = row.dataset.id;
+    inp.addEventListener('input', () => {
+      if (inp.dataset.f === 'nom') $('[data-f="gen"]', row).placeholder = inp.value.trim() ? genOf(inp.value) : famGen(FAMILY.find(x => x.id === id));
+    });
+    inp.addEventListener('change', () => {
+      setNames(id, $('[data-f="nom"]', row).value, $('[data-f="gen"]', row).value);
+      famTexts();
+      toast(`Сохранено: ${famNom(FAMILY.find(x => x.id === id))}`);
+    });
+  });
+  $('.pphoto', app).addEventListener('change', async e => {
+    const f = e.target.files[0], id = photoFor;
+    e.target.value = '';
+    if (!f || !id) return;
+    try { await setPhoto(id, await squarePhoto(f)); famFace(id); toast('Фото сохранено'); }
+    catch (err) { toast('Не получилось открыть фото'); }
   });
   count();
   return () => { clearTimeout(autoStop); Rec.release(); setAudioSession('playback'); };

@@ -1,0 +1,27 @@
+/* «Месяцы»: watch screen, «Поехали по году», «Собери время года», «Чей день рождения?» */
+.mlcard{gap:1.6vmin}
+.mlrow{display:flex;align-items:center;gap:1.6vmin}
+.mlrow .dpill{font-size:clamp(30px,6vmin,64px)}
+.mlnum{min-width:1.6em;height:1.6em;padding:0 .25em;border-radius:999px;background:var(--c);color:var(--t);display:grid;place-items:center;font-weight:900;font-size:clamp(26px,5vmin,54px);border:4px solid #fff;box-shadow:var(--shadow-press)}
+.mfacts{display:flex;gap:1.6vmin;flex-wrap:wrap;justify-content:center}
+.mfact{display:flex;align-items:center;gap:10px;background:#FFF7DA;border-radius:999px;padding:5px 16px 5px 5px;font-weight:900;font-size:clamp(18px,3.2vmin,32px)}
+.mfact .face.hol{margin-right:-11px}
+
+.mstage{display:flex;align-items:center;justify-content:center;gap:4vmin;flex-wrap:wrap}
+.mbig{width:clamp(220px,38vmin,400px);background:var(--c);border-radius:24px;padding:8px;display:flex;flex-direction:column;align-items:center;gap:8px;box-shadow:var(--shadow)}
+.mbig .scene{border-radius:18px}
+.mbig .dpill{font-size:clamp(26px,5vmin,52px);margin-bottom:4px;box-shadow:0 0 0 3px #fff}
+.bigface{width:clamp(150px,28vmin,280px)}
+.mring{width:min(42vw,calc(100vh - 370px));min-width:200px;aspect-ratio:1}
+
+/* «Собери время года»: three slots in a row, the cards below */
+.mseas{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3vmin;min-height:0}
+.mseas-head .dpill{font-size:clamp(30px,6vmin,60px)}
+.mslots{display:flex;align-items:center;gap:1.6vw;background:var(--road);border-radius:24px;padding:2.4vmin 2.4vw}
+.mslot{width:min(24vw,250px);aspect-ratio:200/150;border-radius:18px;border:4px dashed #C3CDDC;display:grid;place-items:center;font-size:clamp(36px,7vmin,70px);font-weight:900;color:#C3CDDC}
+.mslot.next{animation:hint 1s ease-in-out infinite;border-color:#fff;color:#fff}
+.mslot.full{border:0;aspect-ratio:auto;display:flex;flex-direction:column;gap:6px;animation:pop .45s}
+.mslot.full .lbl{color:#fff;font-weight:900;font-size:clamp(18px,3vmin,30px)}
+.marrow{font-size:clamp(28px,5vmin,52px);color:#fff}
+.mspool{display:flex;gap:2.4vw}
+.mspool .opt{width:min(24vw,250px)}

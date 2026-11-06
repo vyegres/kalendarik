@@ -18,5 +18,14 @@
 .pacts{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}
 .pact{background:#E8F3FF;color:#1559B8;border-radius:14px;padding:12px 18px;font-weight:800;font-size:17px}
 .pact:active{background:#D3E7FF}
-.pfile{position:absolute;width:0;height:0;opacity:0}
+.pfile,.pphoto{position:absolute;width:0;height:0;opacity:0}
 .danger{background:#FFE5E5;color:#C62828;border-radius:14px;padding:12px 18px;font-weight:800;font-size:17px;margin-top:6px}
+.pfam{display:flex;align-items:center;gap:14px;padding:10px 6px;border-top:1px solid #EEF2F7}
+.pface{flex:none}
+.pface .face{width:76px;font-size:44px}
+.pfam-f{flex:1;display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px}
+.pfam-m{width:100%;font-weight:800;font-size:17px;color:var(--muted)}
+.pfam label{display:flex;align-items:center;gap:8px;font-size:16px;font-weight:700;color:var(--muted)}
+.pin{font:inherit;font-size:18px;font-weight:700;color:var(--ink);width:150px;padding:8px 10px;border-radius:12px;border:2px solid #DCE4EF;background:#F8FAFD;-webkit-user-select:text;user-select:text}
+.pin:focus{outline:none;border-color:#7FB3F0;background:#fff}
+.pfam:not(.has) [data-act=unphoto]{visibility:hidden}

@@ -24,7 +24,7 @@ export function Quiz(mode) {
   function next() {
     misses = 0; busy = false;
     q = M.make(level(mode), prev, h);
-    prev = q.answer;
+    prev = q.rec || q.answer;
     stage.innerHTML = q.stage;
     opts.style.setProperty('--n', q.options.length);
     opts.style.setProperty('--maxw', M.maxw);
@@ -53,7 +53,7 @@ export function Quiz(mode) {
     sfx.good();
     const r = el.getBoundingClientRect();
     confetti.burst(40, r.left + r.width / 2, r.top + r.height / 2);
-    record(mode, q.answer, misses === 0);
+    record(mode, q.rec || q.answer, misses === 0);
     adjustLevel(mode, misses);
     S.stars++;
     save();

@@ -2,11 +2,19 @@
 .gear{width:56px;height:56px;border-radius:50%;font-size:28px;opacity:.5;display:grid;place-items:center;background:rgba(255,255,255,.35);touch-action:none}
 .gear.holding{animation:hold 1.5s linear forwards;opacity:1}
 @keyframes hold{to{transform:scale(1.5) rotate(360deg);background:#fff}}
-.home-grid{flex:1;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:calc(var(--gap)*1.4);min-height:0}
+.home-grid{flex:1;display:grid;grid-template-columns:repeat(6,1fr);grid-template-rows:1fr 1fr;gap:calc(var(--gap)*1.4);min-height:0}
+/* landscape: seasons · months · days on top, today and the garage below; portrait: two columns, the garage across */
+.home-grid>.tile{grid-column:span 2}
+.home-grid>.t-today,.home-grid>.t-garage{grid-column:span 3}
+@media (orientation:portrait){
+  .home-grid{grid-template-columns:1fr 1fr;grid-template-rows:repeat(3,1fr)}
+  .home-grid>.tile,.home-grid>.t-today{grid-column:auto}
+  .home-grid>.t-garage{grid-column:span 2}
+}
 .tile{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:clamp(10px,2vmin,22px);min-height:0;overflow:hidden;position:relative}
 .tile .art{flex:1;width:100%;min-height:0;display:flex;align-items:center;justify-content:center}
 .tile .art>svg{height:100%;max-width:100%}
-.tile .label{font-weight:900;font-size:clamp(22px,4vmin,40px)}
+.tile .label{font-weight:900;font-size:clamp(22px,3.8vmin,40px);white-space:nowrap}
 .t-days .art{flex-wrap:wrap;align-content:center;gap:6% 3%;padding:0 4%}
 .t-days .art>div{width:21%}
 .t-days::after{content:'';position:absolute;left:0;right:0;bottom:0;height:10px;background:linear-gradient(90deg,#E53935 0 14.3%,#FB8C00 0 28.6%,#FDD835 0 42.9%,#43A047 0 57.1%,#29B6F6 0 71.4%,#3949AB 0 85.7%,#8E24AA 0)}
